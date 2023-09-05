@@ -24,7 +24,7 @@ export class Wallet {
   network;
   createAccessKeyFor;
 
-  constructor({ createAccessKeyFor = undefined, network = 'testnet' }) {
+  constructor({ createAccessKeyFor = undefined, network = 'mainnet' }) {
     // Login to a wallet passing a contractId will create a local
     // key, so the user skips signing non-payable transactions.
     // Omitting the accountId will result in the user being
@@ -82,6 +82,10 @@ export class Wallet {
 
   // Call a method that changes the contract's state
   async callMethod({ contractId, method, args = {}, gas = THIRTY_TGAS, deposit = NO_DEPOSIT }) {
+
+    console.log("contractId", contractId);
+    console.log("method", method);
+    console.log("args", args);
     // Sign a transaction with the "FunctionCall" action
     const outcome = await this.wallet.signAndSendTransaction({
       signerId: this.accountId,

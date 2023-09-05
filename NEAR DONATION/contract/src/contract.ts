@@ -5,7 +5,7 @@ import { Donation, STORAGE_COST } from './model'
 
 @NearBindgen({})
 class DonationContract {
-  beneficiary: string = "v1.faucet.nonofficial.testnet";
+  beneficiary: string = "charityimpact-test.near";
   donations = new UnorderedMap<bigint>('map-uid-1');
 
   @initialize({ privateFunction: true })
@@ -25,7 +25,6 @@ class DonationContract {
     // This is the user's first donation, lets register it, which increases storage
     if (donatedSoFar == BigInt(0)) {
       assert(donationAmount > STORAGE_COST, `Attach at least ${STORAGE_COST} yoctoNEAR`);
-
       // Subtract the storage cost to the amount to transfer
       toTransfer -= STORAGE_COST
     }
@@ -37,16 +36,32 @@ class DonationContract {
 
     // Send the money to the beneficiary
     const promise = near.promiseBatchCreate(this.beneficiary)
-    near.promiseBatchActionTransfer(promise, toTransfer)
-
+    //(promiseBatchXXX
+    //near.promiseBatchActionTransfer(promise, toTransfer)
+    try {
+      near.promiseBatchActionTransfer(promise, toTransfer)
+    } catch (error) {
+      // Handle the error here, for example, log the error message
+      near.log(`Error transferring funds: ${error}`)
+      // Optionally, you can re-throw the error to propagate it further
+      throw error
+    }
     // Return the total amount donated so far
     return donatedSoFar.toString()
   }
 
-  @call({ privateFunction: true })
+  @call({ privateFunction: false })
   change_beneficiary(beneficiary) {
-    this.beneficiary = beneficiary;
+  
+    this.beneficiary = beneficiary.beneficiary;
+
+    return this.beneficiary;
   }
+
+  
+  @call({ payableFunction: true })
+  //donate to a specific charity, not the default beneficary , params beneficiary and amount
+
 
   @view({})
   get_beneficiary(): string { return this.beneficiary }
