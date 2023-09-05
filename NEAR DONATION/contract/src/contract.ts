@@ -25,8 +25,10 @@ class DonationContract {
     // This is the user's first donation, lets register it, which increases storage
     if (donatedSoFar == BigInt(0)) {
       assert(donationAmount > STORAGE_COST, `Attach at least ${STORAGE_COST} yoctoNEAR`);
-      // Subtract the storage cost to the amount to transfer
-      toTransfer -= STORAGE_COST
+
+     // Subtract the storage cost to the amount to transfer
+     toTransfer -= STORAGE_COST;
+     donatedSoFar += STORAGE_COST; // Add the storage cost to the donated amount 
     }
 
     // Persist in storage the amount donated so far
@@ -58,7 +60,6 @@ class DonationContract {
     return this.beneficiary;
   }
 
-  
   @call({ payableFunction: true })
   //donate to a specific charity, not the default beneficary , params beneficiary and amount
 
