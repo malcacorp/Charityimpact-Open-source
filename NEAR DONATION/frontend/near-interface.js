@@ -2,7 +2,7 @@
 
 import { utils } from 'near-api-js'
 
-export class Contracto {
+export class Contract {
 
   constructor({ contractId, walletToUse }) {
     this.contractId = contractId;
@@ -31,18 +31,14 @@ export class Contracto {
     return utils.format.formatNearAmount(donation_amount);
   }
 
-  async donate(amount) {
+  async donate(amount, beneficiary) {
     let deposit = utils.format.parseNearAmount(amount.toString())
-    let response = await this.wallet.callMethod({ contractId: this.contractId, method: "donate", deposit })
+    let response = await this.wallet.callMethod({ contractId: this.contractId, method: "donate", deposit , args:   { 
+      deposit: deposit,
+      beneficiary: beneficiary
+    }})
     return response
   }
-  async changeBeneficiary(new_beneficiary) {
-    console.log("new_beneficiary", new_beneficiary);
-    // change_beneficiary
-    let response = await this.wallet.callMethod({ contractId: this.contractId, method: "change_beneficiary",  args: { new_beneficiary } });
-    return response;
 
-
-  }
 
 }
