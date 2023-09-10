@@ -13,11 +13,19 @@ class DonationContract {
     this.beneficiary = beneficiary
   }
 
+  //call params beneficiary and amount example {beneficiary: "charityimpact-test.near", deposit: 1000000000000000000000000}
   @call({ payableFunction: true })
-  donate() {
+  donate( {beneficiary, deposit}: {beneficiary: string, deposit: bigint} ) {
+
+    const charity = beneficiary;
+    const target = deposit;
+    near.log(`charity: ${charity} amount: ${target}`)
+  
     // Get who is calling the method and how much $NEAR they attached
     let donor = near.predecessorAccountId();
     let donationAmount: bigint = near.attachedDeposit() as bigint;
+    near.log(donationAmount)
+
 
     let donatedSoFar = this.donations.get(donor, {defaultValue: BigInt(0)})
     let toTransfer = donationAmount;
